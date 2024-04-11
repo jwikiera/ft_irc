@@ -15,6 +15,15 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    Server server(argv[1], argv[2]);
-    server.run();
+    Server server;
+
+    try {
+        server.init(argv[1], argv[2]);
+    } catch(const std::exception& e) {
+        server.closeFds();
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+    std::cout << "The Server Closed!" << std::endl;
+    return 0;
 }
