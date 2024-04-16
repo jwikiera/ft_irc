@@ -64,6 +64,18 @@ std::vector<std::string> get_args(const std::string& command) {
     return args;
 }
 
+void Client::setNick(const std::string &nick) {
+    /* validate nick here */
+
+    _nick = nick;
+}
+
+void Client::setUser(const std::string &user) {
+    /* validate user here */
+
+    _user = user;
+}
+
 void Client::processBuffer(const char *newBuff, Server &server) {
     _buffer += std::string(newBuff);
     std::vector<std::string> commands = extractCommands(_buffer);
@@ -84,6 +96,17 @@ void Client::processBuffer(const char *newBuff, Server &server) {
             std::cout << "Not authed, skipping command" << std::endl;
             continue;
         }
+        if (args[0] == "NICK" && args.size() > 1) {
+            setNick(args[1]);
+        }
+        if (args[0] == "USER" && args.size() > 1) {
+            setUser(args[1]);
+        }
+        if (_user.empty() || _nick.empty()) {
+            std::cout << "User or nick empty, skipping command" << std::endl;
+            continue;
+        }
+        
     }
     std::cout << "Remaining in buffer: " << _buffer << std::endl;
 }

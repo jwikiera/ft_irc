@@ -14,6 +14,11 @@ private:
     std::string _ipAddr;
     bool _authenticated; // true if has provided correct password
     std::string _buffer;
+    std::string _nick;
+    std::string _user;
+
+    void setNick(const std::string &nick);
+    void setUser(const std::string &user);
 
 public:
     Client();
