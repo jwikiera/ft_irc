@@ -1,4 +1,3 @@
-#include <cstring>
 #include "Server.h"
 
 bool Server::_gotSig = false;

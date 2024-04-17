@@ -13,6 +13,8 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <vector>
+#include <cstring>
+#include <unistd.h>
 #include "Client.h"
 
 /* colors */

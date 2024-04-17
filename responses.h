@@ -1,0 +1,4 @@
+#ifndef FT_IRC_RESPONSES_H
+#define FT_IRC_RESPONSES_H
+
+#endif //FT_IRC_RESPONSES_H

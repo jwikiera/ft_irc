@@ -106,7 +106,8 @@ void Client::processBuffer(const char *newBuff, Server &server) {
             std::cout << "User or nick empty, skipping command" << std::endl;
             continue;
         }
-        
+
+
     }
     std::cout << "Remaining in buffer: " << _buffer << std::endl;
 }

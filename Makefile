@@ -8,7 +8,7 @@ CXXFLAGS = -std=c++98 -Wall -Werror -Wextra -pedantic -g3
 SOURCES = main.cpp Server.cpp Client.cpp
 
 # Header files
-HEADERS = Server.h Client.h
+HEADERS = Server.h Client.h repsonses.h
 
 # Object files
 OBJECTS = $(SOURCES:.cpp=.o)
