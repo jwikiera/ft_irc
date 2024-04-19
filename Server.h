@@ -23,7 +23,7 @@
 #define GRE "\033[0;32m"
 #define YEL "\033[0;33m"
 
-class Client;
+class Client;è
 
 class Server {
 private:

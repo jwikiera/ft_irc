@@ -16,7 +16,7 @@ void Client::setFd(int fd) {
     _fd = fd;
 }
 
-void Client::setIpAddr(std::string addr) {
+void Client::setIpAddr(const std::string& addr) {
     _ipAddr = addr;
 }
 
@@ -89,25 +89,39 @@ void Client::processBuffer(const char *newBuff, Server &server) {
         if (args.size() > 1) {
             std::cout << "args[1]: " << args[1] << std::endl;
         }
-        if (args[0] == "PASS" && args.size() > 1 && server.checkPassword(args[1])) {
-            _authenticated = true;
-        }
-        if (!_authenticated) {
-            std::cout << "Not authed, skipping command" << std::endl;
-            continue;
+        if (args[0] == "PASS" && args.size() > 1) {
+            _pwd = args[1];
         }
         if (args[0] == "NICK" && args.size() > 1) {
+            if (_authenticated) {
+                continue;
+            }
             setNick(args[1]);
+            reg(server);
         }
         if (args[0] == "USER" && args.size() > 1) {
+            if (_authenticated) {
+                continue;
+            }
             setUser(args[1]);
+            reg(server);
         }
-        if (_user.empty() || _nick.empty()) {
-            std::cout << "User or nick empty, skipping command" << std::endl;
+        if (!_authenticated) {
+            std::cout << "Not registered, skipping command" << std::endl;
             continue;
         }
 
 
     }
     std::cout << "Remaining in buffer: " << _buffer << std::endl;
+}
+
+void Client::reg(Server &server) {
+    if (_user.empty() || _nick.empty()) {
+        return;
+    }
+    if (!server.checkPassword(_pwd)) {
+        return;
+    }
+    _authenticated = true;
 }
