@@ -23,9 +23,9 @@
 
 
 
-#define RPL_WELCOME(source)                             "001 :Welcome to ft_irc"
-#define RPL_NAMREPLY(source, channel, users)            "353 = " + channel + " :" + users
-#define RPL_ENDOFNAMES(source, channel)                 "366 " + channel + " :End of /NAMES list."
+#define RPL_WELCOME(source)                     "001 :Welcome to ft_irc"
+#define RPL_NAMREPLY(source, channel, users)    "353 = " + channel + " :" + users
+#define RPL_ENDOFNAMES(source, channel)         "366 " + channel + " :End of /NAMES list."
 
 
 /* Command Responses */
