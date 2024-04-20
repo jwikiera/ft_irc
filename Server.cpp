@@ -180,13 +180,6 @@ void Server::receiveData(int fd) {
         /* process data */
 
         getClientByFd(fd).processBuffer(buff, *this);
-
-        const char* replyMsg = "LOL!\n";
-        ssize_t sentBytes = send(fd, replyMsg, strlen(replyMsg), 0);
-        if (sentBytes < 0) {
-            // Handle send error
-            std::cerr << "Error sending reply to client <" << fd << ">" << std::endl;
-        }
     }
 }
 

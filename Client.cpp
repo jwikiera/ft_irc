@@ -1,4 +1,3 @@
-#include <sstream>
 #include "Client.h"
 
 
@@ -106,8 +105,27 @@ void Client::processBuffer(const char *newBuff, Server &server) {
             setUser(args[1]);
             reg(server);
         }
+        if (args[0] == "CAP" && args.size() > 2 && args[1] == "LS" && args[2] == "302") {
+            reply(RPL_CAP, _fd);
+        }
+        if (args[0] == "CAP" && args.size() > 1 && args[1] == "REQ") {
+            reply(RPL_CAP_REQ, _fd);
+        }
+        if (args[0] == "JOIN") {
+            //std::cout << "Joinerino " << args[1] << " args len: " << args.size() << std::endl;
+            if (args.size() == 2) {
+                if (args[1] == ":") {
+                    reply(ERR_NOTREGISTERED, _fd);
+                    continue;
+                }
+
+            } else {
+
+            }
+        }
         if (!_authenticated) {
             std::cout << "Not registered, skipping command" << std::endl;
+            reply(ERR_NOTREGISTERED, _fd);
             continue;
         }
 
@@ -124,4 +142,13 @@ void Client::reg(Server &server) {
         return;
     }
     _authenticated = true;
+}
+
+void Client::reply(std::string rep, int fd) {
+    //const char* replyMsg = "LOL!\n";
+    ssize_t sentBytes = send(fd, rep.c_str(), rep.length(), 0);
+    if (sentBytes < 0) {
+        // Handle send error
+        std::cerr << "Error sending reply to client <" << fd << ">" << std::endl;
+    }
 }

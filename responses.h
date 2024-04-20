@@ -3,7 +3,8 @@
 
 #define ERR_NOTREGISTERED                       "451 :You have not registered"
 #define ERR_ALREADYREGISTERED                   "462 :You may not register"
-#define ERR_PASSWDMISMATCH                      "464 :Password is incorrect"
+//#define ERR_PASSWDMISMATCH                      "464 :Password is incorrect"
+#define ERR_PASSWDMISMATCH                      "ERROR :Access denied: Bad password?"
 #define ERR_NONICKNAMEGIVEN                     "431 :Nickname not given"
 #define ERR_NICKNAMEINUSE                       "433 :Nickname is already in use"
 
@@ -22,11 +23,14 @@
 #define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " " + channel + " :They aren't on that channel"
 
 
+#define RPL_CAP                                 "CAP * LS :multi-prefix"
+#define RPL_CAP_REQ                             "CAP * ACK :multi-prefix"
 
 #define RPL_WELCOME(source)                     "001 :Welcome to ft_irc"
 #define RPL_NAMREPLY(source, channel, users)    "353 = " + channel + " :" + users
 #define RPL_ENDOFNAMES(source, channel)         "366 " + channel + " :End of /NAMES list."
 
+#define RPL_MOTD_MISSING(user)                  "422 " + user + " :MOTD file is missing"
 
 /* Command Responses */
 

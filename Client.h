@@ -4,7 +4,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include "Server.h"
+#include "responses.h"
 
 class Server;
 
@@ -21,6 +23,8 @@ private:
     void setNick(const std::string &nick);
     void setUser(const std::string &user);
     void reg(Server &server);
+
+    void reply(std::string rep, int fd);
 
 public:
     Client();
