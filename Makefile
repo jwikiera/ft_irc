@@ -4,11 +4,18 @@ CXX = c++
 # Compiler flags
 CXXFLAGS = -std=c++98 -Wall -Werror -Wextra -pedantic -g3
 
+SRC_FOLDER = src
+HEADER_FOLDER = headers
+
 # Source files
-SOURCES = main.cpp Server.cpp Client.cpp
+SOURCES_LIST = main.cpp Server.cpp Client.cpp Util.cpp Channel.cpp
 
 # Header files
-HEADERS = Server.h Client.h responses.h
+HEADERS_LIST = Server.h Client.h responses.h Util.h Channel.h
+
+SOURCES = $(addprefix $(SRC_FOLDER)/, $(SOURCES_LIST))
+
+HEADERS = $(addprefix $(HEADER_FOLDER)/, $(HEADERS_LIST))
 
 # Object files
 OBJECTS = $(SOURCES:.cpp=.o)
@@ -20,10 +27,10 @@ EXECUTABLE = ircserv
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -I$(HEADER_FOLDER) -o $@
 
 %.o: %.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -I$(HEADER_FOLDER) -c $< -o $@
 
 clean:
 	rm -f $(OBJECTS)

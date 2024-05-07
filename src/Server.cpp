@@ -4,6 +4,7 @@ bool Server::_gotSig = false;
 
 Server::Server() {
     _serverSocketFd = -1;
+    _port = -1;
 }
 
 void Server::init(char *portArg, char *pwdArg) {
@@ -192,6 +193,57 @@ Client &Server::getClientByFd(int fd) {
     throw std::runtime_error("Client not found");
 }
 
-bool Server::checkPassword(std::string pwd) {
+bool Server::checkPassword(const std::string &pwd) {
     return pwd == _password;
+}
+
+Client &Server::getClientByNick(const std::string& nick) {
+    for (size_t i = 0; i < _clients.size(); i++){
+        if (_clients[i].getNick() == nick) {
+            return (_clients[i]);
+        }
+    }
+    throw std::runtime_error("Client not found");
+}
+
+bool Server::nickExists(const std::string &nick) {
+    for (size_t i = 0; i < _clients.size(); i++){
+        if (_clients[i].getNick() == nick) {
+            return (true);
+        }
+    }
+    return (false);
+}
+
+bool Server::channelExists(const std::string &name) {
+    for (size_t i = 0; i < _channels.size(); i++){
+        if (_channels[i].getName() == name) {
+            return (true);
+        }
+    }
+    return (false);
+}
+
+Channel &Server::getChannelByName(const std::string &name) {
+    for (size_t i = 0; i < _channels.size(); i++){
+        if (_channels[i].getName() == name) {
+            return (_channels[i]);
+        }
+    }
+    throw std::runtime_error("Channel not found");
+}
+
+Channel &Server::createChannel(const std::string &name) {
+    Channel res(name);
+    _channels.push_back(res);
+    return (_channels[_channels.size() - 1]);
+}
+
+void Server::removeChannel(const std::string &name) {
+    for (size_t i = 0; i < _channels.size(); i++){
+        if (_channels[i].getName() == name) {
+            _channels.erase(_channels.begin() + i);
+            break;
+        }
+    }
 }

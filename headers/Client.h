@@ -7,6 +7,7 @@
 #include <sstream>
 #include "Server.h"
 #include "responses.h"
+#include "Util.h"
 
 class Server;
 
@@ -19,18 +20,21 @@ private:
     std::string _pwd;
     std::string _nick;
     std::string _user;
+    std::string _realname;
 
     void setNick(const std::string &nick);
     void setUser(const std::string &user);
-    void reg(Server &server);
+    void reg(Server &server, int client_fd);
 
     void reply(std::string rep, int fd);
 
 public:
     Client();
+
     int getFd();
+    std::string getNick();
     void setFd(int fd);
-    void setIpAddr(const std::string& addr);
+    void setIpAddr(const std::string &addr);
     void processBuffer(const char *newBuff, Server &server);
 };
 

@@ -16,6 +16,7 @@
 #include <cstring>
 #include <unistd.h>
 #include "Client.h"
+#include "Channel.h"
 
 /* colors */
 #define RED "\033[0;31m"
@@ -24,6 +25,7 @@
 #define YEL "\033[0;33m"
 
 class Client;
+class Channel;
 
 class Server {
 private:
@@ -31,6 +33,7 @@ private:
     int _serverSocketFd;
     std::string _password;
     std::vector<Client> _clients;
+    std::vector<Channel> _channels;
     std::vector<struct pollfd> _fds;
 
     /* Stop server when we get a ctrl+c or ctrl+\ */
@@ -52,7 +55,24 @@ public:
     static int getPortFromArg(char *arg);
     static void SigHandler(int signum);
 
-    bool checkPassword(std::string pwd);
+    bool checkPassword(const std::string &pwd);
+
+    bool nickExists(const std::string &nick);
+    Client &getClientByNick(const std::string &nick);
+
+    bool channelExists(const std::string &name);
+    Channel &getChannelByName(const std::string &name);
+
+    Channel &createChannel(const std::string &name);
+    void removeChannel(const std::string &name);
+
+    // this might get moved to a command class or smth
+    void kick(const std::string &channel, const std::string &nick);
+    void invite(const std::string &channel, const std::string &nick);
+    void setTopic(const std::string &channel);
+    void getTopic(const std::string &channel);
+
+    std::string hostname;
 };
 
 

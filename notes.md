@@ -1,1 +1,3 @@
-clients test sous linux: hexchat et quassel
+Client de ref: irssi
+
+Changer de mdp: /server add -auto -network local localhost 7001 password

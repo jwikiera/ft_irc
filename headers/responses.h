@@ -26,21 +26,23 @@
 #define RPL_CAP                                 "CAP * LS :multi-prefix"
 #define RPL_CAP_REQ                             "CAP * ACK :multi-prefix"
 
-#define RPL_WELCOME(source)                     "001 :Welcome to ft_irc"
+#define RPL_WELCOME                             "001 :Welcome to ft_irc"
 #define RPL_NAMREPLY(source, channel, users)    "353 = " + channel + " :" + users
 #define RPL_ENDOFNAMES(source, channel)         "366 " + channel + " :End of /NAMES list."
 
-#define RPL_MOTD_MISSING(user)                  "422 " + user + " :MOTD file is missing"
+#define RPL_MOTD_MISSING                        "422 :MOTD file is missing"
 
 /* Command Responses */
 
 #define RPL_JOIN(channel)                       ":JOIN :" + channel
 #define RPL_PART(channel)                       ":PART :" + channel
-#define RPL_PING(token)                         ":PONG :" + token
+#define RPL_PING                                ":PONG  ft_irc :ft_irc"
 #define RPL_PRIVMSG(target, message)            ":PRIVMSG " + target + " :" + message
 #define RPL_NOTICE(target, message)             ":NOTICE " + target + " :" + message
 #define RPL_QUIT(message)                       ":QUIT :Quit: " + message
 #define RPL_KICK(channel, target, reason)       ":KICK " + channel + " " + target + " :" + reason
 #define RPL_MODE(channel, modes, args)          ":MODE " + channel + " " + modes + " " + args
 
-#endif //FT_IRC_RESPONSES_H
+#define ERR_UNKNOWNMODE(modechar)               "472 " + modechar + " :is unknown mode char to me"
+
+#endif //FT_IRC_// RESPONSES_H
