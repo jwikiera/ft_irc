@@ -75,6 +75,18 @@ void Client::setUser(const std::string &user) {
     _user = user;
 }
 
+static void printArgs(const std::vector<std::string> &args) {
+    std::cout << "Args:\n";
+    for (size_t i = 0; i < args.size(); ++i) {
+        std::cout << (i + 1) << ": " << args[i];
+        if (i < args.size() - 1) {
+            std::cout << "\n";
+        } else {
+            std::cout << std::endl;
+        }
+    }
+}
+
 void Client::processBuffer(const char *newBuff, Server &server) {
     _buffer += std::string(newBuff);
     std::vector<std::string> commands = extractCommands(_buffer);
@@ -84,10 +96,7 @@ void Client::processBuffer(const char *newBuff, Server &server) {
         if (args.empty()) {
             continue;
         }
-        std::cout << "Command: " << args[0] << std::endl;
-        if (args.size() > 1) {
-            std::cout << "args[1]: " << args[1] << std::endl;
-        }
+        printArgs(args);
         if (args[0] == "PING") {
             reply(RPL_PING, _fd);
             continue;
@@ -182,7 +191,7 @@ void Client::reg(Server &server, int client_fd) {
         reply(ERR_PASSWDMISMATCH, client_fd);
     }
     _authenticated = true;
-    reply(RPL_WELCOME, client_fd);
+    reply(RPL_WELCOME(_nick), client_fd);
     reply(RPL_MOTD_MISSING, client_fd);
 }
 

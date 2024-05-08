@@ -26,7 +26,7 @@
 #define RPL_CAP                                 "CAP * LS :multi-prefix"
 #define RPL_CAP_REQ                             "CAP * ACK :multi-prefix"
 
-#define RPL_WELCOME                             "001 :Welcome to ft_irc"
+#define RPL_WELCOME(nick)                       "001 " + nick + " :Welcome to ft_irc"
 #define RPL_NAMREPLY(source, channel, users)    "353 = " + channel + " :" + users
 #define RPL_ENDOFNAMES(source, channel)         "366 " + channel + " :End of /NAMES list."
 
@@ -36,7 +36,7 @@
 
 #define RPL_JOIN(channel)                       ":JOIN :" + channel
 #define RPL_PART(channel)                       ":PART :" + channel
-#define RPL_PING                                ":PONG  ft_irc :ft_irc"
+#define RPL_PING                                ":ft_irc PONG  ft_irc :ft_irc"
 #define RPL_PRIVMSG(target, message)            ":PRIVMSG " + target + " :" + message
 #define RPL_NOTICE(target, message)             ":NOTICE " + target + " :" + message
 #define RPL_QUIT(message)                       ":QUIT :Quit: " + message

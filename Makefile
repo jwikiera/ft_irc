@@ -2,7 +2,7 @@
 CXX = c++
 
 # Compiler flags
-CXXFLAGS = -std=c++98 -Wall -Werror -Wextra -pedantic -g3
+CXXFLAGS = -std=c++98 -Wall -Werror -Wextra -pedantic -g3 -Wno-unused-parameter
 
 SRC_FOLDER = src
 HEADER_FOLDER = headers

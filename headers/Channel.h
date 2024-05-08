@@ -6,6 +6,9 @@
 #include <set>
 #include "Server.h"
 
+
+class Server;
+
 class Channel {
 private:
     Channel();
