@@ -1,0 +1,4 @@
+> 2024/05/14 00:11:11.000673024  length=21 from=236 to=256
+PRIVMSG #lol :hello\r
+< 2024/05/14 00:11:11.000673115  length=45 from=2272 to=2316
+:nick2!~user2@localhost PRIVMSG #lol :hello\r

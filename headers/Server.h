@@ -40,7 +40,6 @@ private:
     static bool _gotSig;
 
     void registerSignals();
-    Client &getClientByFd(int fd);
 
 public:
     Server();
@@ -59,6 +58,8 @@ public:
 
     bool nickExists(const std::string &nick);
     Client &getClientByNick(const std::string &nick);
+    bool fdExists(int fd);
+    Client &getClientByFd(int fd);
 
     bool channelExists(const std::string &name);
     Channel &getChannelByName(const std::string &name);
@@ -71,6 +72,9 @@ public:
     void invite(const std::string &channel, const std::string &nick);
     void setTopic(const std::string &channel);
     void getTopic(const std::string &channel);
+
+    void sendToAll(const std::string &rep);
+    void sendToClient(const std::string &rep, int fd);
 
     std::string hostname;
 };

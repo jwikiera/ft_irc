@@ -18,8 +18,12 @@ private:
     std::set<char> _modes;
     std::string _name;
     std::string _topic;
+    std::string _password;
+    int _userLimit;
+
 public:
     void setName(const std::string &name);
+    std::set<char> getModes();
 
     const std::string &getTopic() const;
 
@@ -28,13 +32,17 @@ public:
     Channel(const std::string &name);
     std::string getName();
 
-    void addMode(const char &mode, Server &server);
+    void addMode(const std::string &mode, std::vector<std::string> args, Server &server);
     bool hasMode(const char &mode);
-    void removeMode(const char &mode, Server &server);
+    void removeMode(const std::string &mode, Server &server);
 
-    bool fd_is_op(int fd);
+    bool hasFd(int fd);
+    bool fdIsOp(int fd);
     void op(int fd, Server &server);
     void deop(int fd, Server &server);
+
+    void join(int fd, Server &server);
+    void part(int fd, Server &server);
 };
 
 

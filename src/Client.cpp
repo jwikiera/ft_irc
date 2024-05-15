@@ -7,7 +7,7 @@ Client::Client() {
     _buffer = "";
 }
 
-int Client::getFd() {
+int Client::getFd() const {
     return _fd;
 }
 
@@ -44,7 +44,7 @@ bool startswith(const std::string& str, const std::string& needle) {
     return true;
 }
 
-std::vector<std::string> get_args(const std::string& command) {
+std::vector<std::string> getArgs(const std::string& command) {
     std::string commandCopy = command;
     size_t pos = 0;
     while ((pos = commandCopy.find('\r', pos)) != std::string::npos) {
@@ -92,13 +92,13 @@ void Client::processBuffer(const char *newBuff, Server &server) {
     std::vector<std::string> commands = extractCommands(_buffer);
     std::vector<std::string>::iterator it;
     for (it = commands.begin(); it != commands.end(); ++it) {
-        std::vector<std::string> args = get_args(*it);
+        std::vector<std::string> args = getArgs(*it);
         if (args.empty()) {
             continue;
         }
         printArgs(args);
         if (args[0] == "PING") {
-            reply(RPL_PING, _fd);
+            reply(RPL_PING);
             continue;
         }
         if (args[0] == "PASS" && args.size() > 1) {
@@ -107,26 +107,29 @@ void Client::processBuffer(const char *newBuff, Server &server) {
         if (args[0] == "NICK" && args.size() > 1) {
             setNick(args[1]);
             if (!_authenticated) {
-                reg(server, _fd);
+                reg(server);
             }
             continue;
         }
-        /* we ignore second username and real name */
-        if (args[0] == "USER" && args.size() > 1) {
+        /* we ignore second username */
+        if (args[0] == "USER" && args.size() > 4) {
             if (_authenticated) {
-                reply(ERR_ALREADYREGISTERED, _fd);
+                reply(ERR_ALREADYREGISTERED);
                 continue;
             }
             setUser(args[1]);
-            reg(server, _fd);
+            if (startswith(args[4], ":")) {
+                setRealName(args[4].substr(1));
+            }
+            reg(server);
             continue;
         }
         if (args[0] == "CAP" && args.size() > 2 && args[1] == "LS" && args[2] == "302") {
-            reply(RPL_CAP, _fd);
+            reply(RPL_CAP);
             continue;
         }
         if (args[0] == "CAP" && args.size() > 1 && args[1] == "REQ") {
-            reply(RPL_CAP_REQ, _fd);
+            reply(RPL_CAP_REQ);
             continue;
         }
         if (args[0] == "CAP" && args.size() > 1 && args[1] == "END") {
@@ -135,19 +138,20 @@ void Client::processBuffer(const char *newBuff, Server &server) {
         if (args[0] == "JOIN") {
             //std::cout << "Joinerino " << args[1] << " args len: " << args.size() << std::endl;
             if (args.size() == 2) {
-                if (args[1] == ":") { // what???
-                    reply(ERR_NOTREGISTERED, _fd);
+                if (server.channelExists(args[1])) {
 
+                } else {
+                    server.createChannel(args[1]);
                 }
 
             } else {
-
+                reply(ERR_NEEDMOREPARAMS(std::string("JOIN")));
             }
             continue;
         }
         if (!_authenticated) {
             std::cout << "Not registered, skipping command" << std::endl;
-            reply(ERR_NOTREGISTERED, _fd);
+            reply(ERR_NOTREGISTERED);
             continue;
         }
         /* — i : Définir/supprimer le canal sur invitation uniquement
@@ -156,56 +160,93 @@ void Client::processBuffer(const char *newBuff, Server &server) {
             — o : Donner/retirer le privilège de l’opérateur de canal
             — l : Définir/supprimer la limite d’utilisateurs pour le canal */
         if (args[0] == "MODE") {
-            if (args.size() > 3) {
+            if (args.size() > 1) {
+                /* we ignore user modes */
                 if (startswith(args[1], "#")) {
                     std::string name = Util::removeFirstChar(args[1]);
                     if (server.channelExists(name)) {
+                        std::string mode = args[2].substr(1, 2);
+                        Channel &chan = server.getChannelByName(name);
+                        if (!chan.hasFd(_fd)) {
+                            reply(ERR_USERNOTINCHANNEL(_nick, chan.getName()));
+                            continue;
+                        }
                         if (startswith(args[2], "+")) {
-
+                            chan.addMode(mode, args, server);
                         } else if (startswith(args[2], "-")) {
-
+                            chan.removeMode(mode, server);
                         } else {
-                            reply(ERR_UNKNOWNMODE(std::string()), _fd);
+                            std::string modes = "+";
+                            std::set<char>::iterator it_;
+                            for (it_ = chan.getModes().begin(); it_ != chan.getModes().end(); ++it) {
+                                modes += *it;
+                            }
+                            reply(RPL_CHANNEL_MODES(_nick, chan.getName(), modes));
                         }
                     } else {
-                        reply(ERR_NOSUCHCHANNEL(name), _fd);
+                        reply(ERR_NOSUCHCHANNEL(name));
                     }
                 } else {
-                    reply(ERR_UNKNOWNMODE(std::string()), _fd);
+                    reply(ERR_UNKNOWNMODE(std::string()));
                 }
             } else {
-                reply(ERR_NEEDMOREPARAMS(std::string("MODE")), _fd);
+                reply(ERR_NEEDMOREPARAMS(std::string("MODE")));
+            }
+            continue;
+        }
+        if (args[0] == "OPER") {
+            if (args.size() > 2) {
+                if (args[2] != "1234") {
+                    reply(ERR_PASSWDMISMATCH);
+                } else {
+                    server.sendToAll(RPL_MODE_OPER(_nick));
+                    reply(RPL_OPER(_nick));
+                }
+            } else {
+                reply(ERR_NEEDMOREPARAMS(std::string("OPER")));
             }
             continue;
         }
 
     }
+
     std::cout << "Remaining in buffer: " << _buffer << std::endl;
 }
 
-void Client::reg(Server &server, int client_fd) {
+void Client::reg(Server &server) {
     if (_user.empty() || _nick.empty()) {
         return;
     }
     if (!server.checkPassword(_pwd)) {
-        reply(ERR_PASSWDMISMATCH, client_fd);
+        reply(ERR_PASSWDMISMATCH);
     }
     _authenticated = true;
-    reply(RPL_WELCOME(_nick), client_fd);
-    reply(RPL_MOTD_MISSING, client_fd);
+    reply(RPL_WELCOME(_nick));
+    reply(RPL_MOTD_MISSING);
 }
 
-void Client::reply(std::string rep, int fd) {
+void Client::reply(std::string rep) const {
     rep = rep.substr(0, 510);
-    std::cout << "attempting to reply with " << rep << " to " << fd <<std::endl;
+    std::cout << "attempting to reply with " << rep << " to " << _fd <<std::endl;
     rep += "\r\n";
-    ssize_t sentBytes = send(fd, rep.c_str(), rep.length(), 0);
+    ssize_t sentBytes = send(_fd, rep.c_str(), rep.length(), 0);
     if (sentBytes < 0) {
-        // Handle send error
-        std::cerr << "Error sending reply to client <" << fd << ">" << std::endl;
+        std::cerr << "Error sending reply to client <" << _fd << ">" << std::endl;
     }
 }
 
 std::string Client::getNick() {
     return _nick;
+}
+
+std::string Client::getUser() {
+    return _user;
+}
+
+void Client::setRealName(const std::string &rname) {
+    _realname = rname;
+}
+
+std::string Client::getRealName() {
+    return _realname;
 }

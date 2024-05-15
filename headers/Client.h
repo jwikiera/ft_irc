@@ -24,15 +24,20 @@ private:
 
     void setNick(const std::string &nick);
     void setUser(const std::string &user);
-    void reg(Server &server, int client_fd);
+    void setRealName(const std::string &rname);
+    void reg(Server &server);
 
-    void reply(std::string rep, int fd);
+
 
 public:
     Client();
 
-    int getFd();
+    void reply(std::string rep) const;
+
+    int getFd() const;
     std::string getNick();
+    std::string getUser();
+    std::string getRealName();
     void setFd(int fd);
     void setIpAddr(const std::string &addr);
     void processBuffer(const char *newBuff, Server &server);

@@ -184,15 +184,6 @@ void Server::receiveData(int fd) {
     }
 }
 
-Client &Server::getClientByFd(int fd) {
-    for (size_t i = 0; i < _clients.size(); i++){
-        if (_clients[i].getFd() == fd) {
-            return (_clients[i]);
-        }
-    }
-    throw std::runtime_error("Client not found");
-}
-
 bool Server::checkPassword(const std::string &pwd) {
     return pwd == _password;
 }
@@ -246,4 +237,44 @@ void Server::removeChannel(const std::string &name) {
             break;
         }
     }
+}
+
+void Server::sendToAll(const std::string &rep) {
+    std::string rep_ = rep.substr(0, 510);
+    std::cout << "attempting to reply with " << rep_ << " to all" << std::endl;
+    rep_ += "\r\n";
+    for (size_t i = 0; i < _clients.size(); i ++) {
+        ssize_t sentBytes = send(_clients[i].getFd(), rep_.c_str(), rep_.length(), 0);
+        if (sentBytes < 0) {
+            std::cerr << "Error sending reply to client <" << _clients[i].getFd() << ">" << std::endl;
+        }
+    }
+}
+
+void Server::sendToClient(const std::string &rep, int fd) {
+    std::string rep_ = rep.substr(0, 510);
+    std::cout << "attempting to reply with " << rep_ << " to " << fd <<std::endl;
+    rep_ += "\r\n";
+    ssize_t sentBytes = send(fd, rep_.c_str(), rep_.length(), 0);
+    if (sentBytes < 0) {
+        std::cerr << "Error sending reply to client <" << fd << ">" << std::endl;
+    }
+}
+
+bool Server::fdExists(int fd) {
+    for (size_t i = 0; i < _clients.size(); i++){
+        if (_clients[i].getFd() == fd) {
+            return (true);
+        }
+    }
+    return (false);
+}
+
+Client &Server::getClientByFd(int fd) {
+    for (size_t i = 0; i < _clients.size(); i++){
+        if (_clients[i].getFd() == fd) {
+            return (_clients[i]);
+        }
+    }
+    throw std::runtime_error("Client not found");
 }

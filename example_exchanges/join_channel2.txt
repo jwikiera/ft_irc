@@ -1,0 +1,20 @@
+ 2024/05/14 00:09:22.000713083  length=11 from=178 to=188
+JOIN #lol\r
+< 2024/05/14 00:09:22.000713192  length=135 from=1764 to=1898
+:nick1_!~user1@localhost JOIN :#lol\r
+:irc.example.net 353 nick1_ = #lol :@nick1_\r
+:irc.example.net 366 nick1_ #lol :End of NAMES list\r
+> 2024/05/14 00:09:25.000216270  length=11 from=189 to=199
+MODE #lol\r
+< 2024/05/14 00:09:25.000216432  length=81 from=1899 to=1979
+:irc.example.net 324 nick1_ #lol +\r
+:irc.example.net 329 nick1_ #lol 1715638162\r
+> 2024/05/14 00:09:27.000719393  length=10 from=200 to=209
+WHO #lol\r
+< 2024/05/14 00:09:27.000719589  length=141 from=1980 to=2120
+:irc.example.net 352 nick1_ #lol ~user1 localhost irc.example.net nick1_ H@ :0 realname1\r
+:irc.example.net 315 nick1_ #lol :End of WHO list\r
+> 2024/05/14 00:09:30.000222086  length=13 from=210 to=222
+MODE #lol b\r
+< 2024/05/14 00:09:30.000222173  length=59 from=2121 to=2179
+:irc.example.net 368 nick1_ #lol :End of channel ban list\r

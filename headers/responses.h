@@ -20,21 +20,28 @@
 #define ERR_CHANOPRIVSNEEDED(channel)           "482 " + channel + " :You're not channel operator"
 
 #define ERR_NOSUCHNICK(nickname)                "401 " + nickname + " :No such nick/channel"
-#define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " " + channel + " :They aren't on that channel"
+#define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " #" + channel + " :They aren't on that channel"
 
 
 #define RPL_CAP                                 "CAP * LS :multi-prefix"
 #define RPL_CAP_REQ                             "CAP * ACK :multi-prefix"
 
 #define RPL_WELCOME(nick)                       "001 " + nick + " :Welcome to ft_irc"
-#define RPL_NAMREPLY(source, channel, users)    "353 = " + channel + " :" + users
-#define RPL_ENDOFNAMES(source, channel)         "366 " + channel + " :End of /NAMES list."
+
+/*
+ * 353    RPL_NAMREPLY
+              "( "=" / "*" / "@" ) <channel>
+               :[ "@" / "+" ] <nick> *( " " [ "@" / "+" ] <nick> )
+         - "@" is used for secret channels, "*" for private
+           channels, and "=" for others (public channels).*/
+#define RPL_NAMREPLY(nick, channel, users)      "353 " + nick + " = #" + channel + " :" + users
+#define RPL_ENDOFNAMES(nick, channel)           "366 " + nick + "#" + channel + " :End of /NAMES list."
 
 #define RPL_MOTD_MISSING                        "422 :MOTD file is missing"
 
 /* Command Responses */
 
-#define RPL_JOIN(channel)                       ":JOIN :" + channel
+#define RPL_JOIN(nick, user, channel)           ":" + nick + "!~" + user + " JOIN :#" + channel
 #define RPL_PART(channel)                       ":PART :" + channel
 #define RPL_PING                                ":ft_irc PONG  ft_irc :ft_irc"
 #define RPL_PRIVMSG(target, message)            ":PRIVMSG " + target + " :" + message
@@ -42,6 +49,9 @@
 #define RPL_QUIT(message)                       ":QUIT :Quit: " + message
 #define RPL_KICK(channel, target, reason)       ":KICK " + channel + " " + target + " :" + reason
 #define RPL_MODE(channel, modes, args)          ":MODE " + channel + " " + modes + " " + args
+#define RPL_MODE_OPER(user)                     "MODE " + user + " :+o"
+#define RPL_OPER(user)                          "381 " + user + " :You are now an IRC Operator"
+#define RPL_CHANNEL_MODES(user, channel, modes) "324 " + user +" #" + channel + " " + modes
 
 #define ERR_UNKNOWNMODE(modechar)               "472 " + modechar + " :is unknown mode char to me"
 

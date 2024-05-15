@@ -20,19 +20,40 @@ const std::string &Channel::getTopic() const {
     return _topic;
 }
 
-void Channel::addMode(const char &mode, Server &server) {
+/* — i : Définir/supprimer le canal sur invitation uniquement
+— t : Définir/supprimer les restrictions de la commande TOPIC pour les opérateurs de canaux
+— k : Définir/supprimer la clé du canal (mot de passe)
+— o : Donner/retirer le privilège de l’opérateur de canal
+— l : Définir/supprimer la limite d’utilisateurs pour le canal */
+void Channel::addMode(const std::string &mode, std::vector<std::string> args, Server &server) {
+    if (mode.empty()) {
+        return;
+    }
+    char c_mode = mode.c_str()[0];
+    _modes.insert(c_mode);
+    if (c_mode == 'k') {
+        // get password from args and set it
+    } else if (c_mode == 'o') {
 
+    } else if (c_mode == 'l') {
+
+    }
 }
 
 bool Channel::hasMode(const char &mode) {
-    return false;
+    return _modes.find(mode) != _modes.end();
 }
 
-void Channel::removeMode(const char &mode, Server &server) {
+void Channel::removeMode(const std::string &mode, Server &server) {
 
 }
 
-bool Channel::fd_is_op(int fd) {
+bool Channel::fdIsOp(int fd) {
+    for (size_t i = 0; i < _opFds.size(); ++i) {
+        if (_opFds[i] == fd) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -47,3 +68,51 @@ void Channel::deop(int fd, Server &server) {
 void Channel::setTopic(const std::string &topic, Server &server) {
     _topic = topic;
 }
+
+void Channel::join(int fd, Server &server) {
+    if (server.fdExists(fd)) {
+
+
+        Client c = server.getClientByFd(fd);
+        server.sendToAll(RPL_JOIN(c.getNick(), c.getUser(), _name));
+
+        std::string users = "";
+        if (_clientFds.empty()) {
+            _opFds.push_back(fd);
+        }
+
+        for (size_t i = 0; i < _clientFds.size(); ++i) {
+            if (server.fdExists(_clientFds[i])) {
+                if (i > 0) {
+                    users += " ";
+                }
+                if (fdIsOp(_clientFds[i])) {
+                    users += "@";
+                }
+                users += c.getNick();
+            }
+        }
+        c.reply(RPL_NAMREPLY(c.getNick(), _name, users));
+        c.reply(RPL_ENDOFNAMES(c.getNick(), _name));
+        _clientFds.push_back(fd);
+    }
+}
+
+void Channel::part(int fd, Server &server) {
+
+}
+
+bool Channel::hasFd(int fd) {
+    for (size_t i = 0; i < _clientFds.size(); ++i) {
+        if (_clientFds[i] == fd) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::set<char> Channel::getModes() {
+    return _modes;
+}
+
+

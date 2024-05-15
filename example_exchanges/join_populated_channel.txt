@@ -1,0 +1,32 @@
+user already in:
+< 2024/05/14 00:31:57.000553326  length=36 from=1897 to=1932
+:nick2!~user2@localhost JOIN :#lol\r
+
+new user:
+JOIN #lol\r
+< 2024/05/14 00:31:57.000553311  length=137 from=1435 to=1571
+:nick2!~user2@localhost JOIN :#lol\r
+:irc.example.net 353 nick2 = #lol :nick2 @nick1\r
+:irc.example.net 366 nick2 #lol :End of NAMES list\r
+> 2024/05/14 00:32:00.000056367  length=11 from=158 to=168
+MODE #lol\r
+< 2024/05/14 00:32:00.000056437  length=79 from=1572 to=1650
+:irc.example.net 324 nick2 #lol +\r
+:irc.example.net 329 nick2 #lol 1715639499\r
+> 2024/05/14 00:32:02.000559255  length=10 from=169 to=178
+WHO #lol\r
+< 2024/05/14 00:32:02.000559350  length=221 from=1651 to=1871
+:irc.example.net 352 nick2 #lol ~user2 localhost irc.example.net nick2 H :0 real2\r
+:irc.example.net 352 nick2 #lol ~user1 localhost irc.example.net nick1 H@ :0 realname1\r
+:irc.example.net 315 nick2 #lol :End of WHO list\r
+> 2024/05/14 00:32:05.000062485  length=13 from=179 to=191
+MODE #lol b\r
+< 2024/05/14 00:32:05.000062728  length=58 from=1872 to=1929
+:irc.example.net 368 nick2 #lol :End of channel ban list\r
+
+# TODO:
+* mode, who, mode b
+* privmsg
+* DM
+* kick, invite, topic
+* send topic on join
