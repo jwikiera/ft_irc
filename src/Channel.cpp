@@ -71,15 +71,15 @@ void Channel::setTopic(const std::string &topic, Server &server) {
 
 void Channel::join(int fd, Server &server) {
     if (server.fdExists(fd)) {
-
-
         Client c = server.getClientByFd(fd);
-        server.sendToAll(RPL_JOIN(c.getNick(), c.getUser(), _name));
+        server.sendToAll(RPL_JOIN(c.getNick(), c.getUser(), c.getHost(), _name));
 
         std::string users = "";
         if (_clientFds.empty()) {
             _opFds.push_back(fd);
         }
+        _clientFds.push_back(fd);
+        std::cout << "pushing fd " << fd << " to fds..., size is now " << _clientFds.size() << std::endl;
 
         for (size_t i = 0; i < _clientFds.size(); ++i) {
             if (server.fdExists(_clientFds[i])) {
@@ -94,6 +94,7 @@ void Channel::join(int fd, Server &server) {
         }
         c.reply(RPL_NAMREPLY(c.getNick(), _name, users));
         c.reply(RPL_ENDOFNAMES(c.getNick(), _name));
+        //std::cout << "pushing back fd to "
         _clientFds.push_back(fd);
     }
 }
@@ -111,8 +112,12 @@ bool Channel::hasFd(int fd) {
     return false;
 }
 
-std::set<char> Channel::getModes() {
+std::set<char> &Channel::getModes() {
     return _modes;
+}
+
+std::vector<int> Channel::getClientFds() {
+    return _clientFds;
 }
 
 

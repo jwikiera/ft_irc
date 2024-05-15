@@ -23,7 +23,8 @@ private:
 
 public:
     void setName(const std::string &name);
-    std::set<char> getModes();
+    std::set<char> &getModes();
+    std::vector<int> getClientFds();
 
     const std::string &getTopic() const;
 

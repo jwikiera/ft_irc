@@ -1,3 +1,4 @@
 Client de ref: irssi
 
-Changer de mdp: /server add -auto -network local localhost 7001 password
+/network add local
+/server add -auto -network local localhost 7001/7002 password

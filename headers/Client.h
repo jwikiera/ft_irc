@@ -21,10 +21,13 @@ private:
     std::string _nick;
     std::string _user;
     std::string _realname;
+    std::string _servername;
+    std::string _hostname;
 
     void setNick(const std::string &nick);
     void setUser(const std::string &user);
     void setRealName(const std::string &rname);
+    void setHost(const std::string &host);
     void reg(Server &server);
 
 
@@ -38,6 +41,7 @@ public:
     std::string getNick();
     std::string getUser();
     std::string getRealName();
+    std::string getHost();
     void setFd(int fd);
     void setIpAddr(const std::string &addr);
     void processBuffer(const char *newBuff, Server &server);

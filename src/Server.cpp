@@ -218,7 +218,8 @@ bool Server::channelExists(const std::string &name) {
 Channel &Server::getChannelByName(const std::string &name) {
     for (size_t i = 0; i < _channels.size(); i++){
         if (_channels[i].getName() == name) {
-            return (_channels[i]);
+            return (&_channels[i]); //here its broken, because whatever is returned is a copy that does not get reflected here
+            // TODO: fixme >:(
         }
     }
     throw std::runtime_error("Channel not found");

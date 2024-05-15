@@ -17,13 +17,13 @@ int main(int argc, char *argv[]) {
 
     Server server;
 
-    try {
+    //try {
         server.init(argv[1], argv[2]);
-    } catch(const std::exception& e) {
+    /*} catch(const std::exception& e) {
         server.closeFds();
         std::cerr << e.what() << std::endl;
         return 1;
-    }
+    }*/
     std::cout << "The Server Closed!" << std::endl;
     return 0;
 }

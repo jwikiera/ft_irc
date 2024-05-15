@@ -34,14 +34,15 @@
                :[ "@" / "+" ] <nick> *( " " [ "@" / "+" ] <nick> )
          - "@" is used for secret channels, "*" for private
            channels, and "=" for others (public channels).*/
-#define RPL_NAMREPLY(nick, channel, users)      "353 " + nick + " = #" + channel + " :" + users
-#define RPL_ENDOFNAMES(nick, channel)           "366 " + nick + "#" + channel + " :End of /NAMES list."
+#define RPL_NAMREPLY(nick, channel, users)      "353 " + nick + " = #" + channel + " :" + users //2
+#define RPL_ENDOFNAMES(nick, channel)           "366 " + nick + " #" + channel + " :End of /NAMES list." //3
+#define RPL_JOIN(nick, user, host, channel)     ":" + nick + "!~" + user + "@" + host + " JOIN :#" + channel //1
 
 #define RPL_MOTD_MISSING                        "422 :MOTD file is missing"
 
 /* Command Responses */
 
-#define RPL_JOIN(nick, user, channel)           ":" + nick + "!~" + user + " JOIN :#" + channel
+
 #define RPL_PART(channel)                       ":PART :" + channel
 #define RPL_PING                                ":ft_irc PONG  ft_irc :ft_irc"
 #define RPL_PRIVMSG(target, message)            ":PRIVMSG " + target + " :" + message
@@ -52,6 +53,9 @@
 #define RPL_MODE_OPER(user)                     "MODE " + user + " :+o"
 #define RPL_OPER(user)                          "381 " + user + " :You are now an IRC Operator"
 #define RPL_CHANNEL_MODES(user, channel, modes) "324 " + user +" #" + channel + " " + modes
+#define RPL_WHO(requesting_nick, channel, user, host, nick, flags, realname) "352 " + requesting_nick + " #" + channel + " ~" + user + " " + host + " ft_irc " + nick +" H :0 " + realname
+#define END_WHO(nick, channel)                  "315 " + nick + " #" + channel + " :End of WHO list"
+#define END_BAN(nick, channel)                  "368 " + nick +" #" + channel + " :End of channel ban list"
 
 #define ERR_UNKNOWNMODE(modechar)               "472 " + modechar + " :is unknown mode char to me"
 

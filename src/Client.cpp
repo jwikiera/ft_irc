@@ -121,6 +121,7 @@ void Client::processBuffer(const char *newBuff, Server &server) {
             if (startswith(args[4], ":")) {
                 setRealName(args[4].substr(1));
             }
+            setHost(args[3]);
             reg(server);
             continue;
         }
@@ -138,12 +139,11 @@ void Client::processBuffer(const char *newBuff, Server &server) {
         if (args[0] == "JOIN") {
             //std::cout << "Joinerino " << args[1] << " args len: " << args.size() << std::endl;
             if (args.size() == 2) {
-                if (server.channelExists(args[1])) {
-
-                } else {
-                    server.createChannel(args[1]);
+                if (!server.channelExists(args[1].substr(1))) {
+                    server.createChannel(args[1].substr(1));
                 }
-
+                Channel chan = server.getChannelByName(args[1].substr(1));
+                chan.join(_fd, server);
             } else {
                 reply(ERR_NEEDMOREPARAMS(std::string("JOIN")));
             }
@@ -165,21 +165,26 @@ void Client::processBuffer(const char *newBuff, Server &server) {
                 if (startswith(args[1], "#")) {
                     std::string name = Util::removeFirstChar(args[1]);
                     if (server.channelExists(name)) {
-                        std::string mode = args[2].substr(1, 2);
                         Channel &chan = server.getChannelByName(name);
-                        if (!chan.hasFd(_fd)) {
-                            reply(ERR_USERNOTINCHANNEL(_nick, chan.getName()));
-                            continue;
-                        }
-                        if (startswith(args[2], "+")) {
-                            chan.addMode(mode, args, server);
-                        } else if (startswith(args[2], "-")) {
-                            chan.removeMode(mode, server);
+                        if (args.size() > 2) {
+                            std::string mode = args[2].substr(1, 2);
+                            if (!chan.hasFd(_fd)) {
+                                reply(ERR_USERNOTINCHANNEL(_nick, chan.getName()));
+                                continue;
+                            }
+                            if (startswith(args[2], "b")) {
+                                reply(END_BAN(_nick, chan.getName()));
+                            } else if (startswith(args[2], "+")) {
+                                chan.addMode(mode, args, server);
+                            } else if (startswith(args[2], "-")) {
+                                chan.removeMode(mode, server);
+                            }
                         } else {
                             std::string modes = "+";
                             std::set<char>::iterator it_;
-                            for (it_ = chan.getModes().begin(); it_ != chan.getModes().end(); ++it) {
-                                modes += *it;
+                            std::cout << "The size of chan modes is " << chan.getModes().size() << std::endl;
+                            for (it_ = chan.getModes().begin(); it_ != chan.getModes().end(); it_ ++) {
+                                modes += *it_;
                             }
                             reply(RPL_CHANNEL_MODES(_nick, chan.getName(), modes));
                         }
@@ -207,7 +212,28 @@ void Client::processBuffer(const char *newBuff, Server &server) {
             }
             continue;
         }
-
+        if (args[0] == "WHO") {
+            if (args.size() > 1) {
+                if (!server.channelExists(args[1].substr(1))) {
+                    reply(ERR_NOSUCHCHANNEL(args[1]));
+                    continue;
+                }
+                Channel chan = server.getChannelByName(args[1].substr(1));
+                std::cout << "Amount of users in channel for WHO: " << chan.getClientFds().size() << std::endl;
+                for (size_t i = 0; i < chan.getClientFds().size(); i ++) {
+                    Client client = server.getClientByFd(chan.getClientFds()[i]);
+                    std::string flags = "H";
+                    if (chan.fdIsOp(chan.getClientFds()[i])) {
+                        flags = "H@";
+                    }
+                    reply(RPL_WHO(_nick, chan.getName(), client.getUser(), client.getHost(), client.getNick(), flags, client.getRealName()));
+                }
+                reply(END_WHO(_nick, chan.getName()));
+            } else {
+                reply(ERR_NEEDMOREPARAMS(std::string("WHO")));
+            }
+            continue;
+        }
     }
 
     std::cout << "Remaining in buffer: " << _buffer << std::endl;
@@ -249,4 +275,12 @@ void Client::setRealName(const std::string &rname) {
 
 std::string Client::getRealName() {
     return _realname;
+}
+
+void Client::setHost(const std::string &host) {
+    _hostname = host;
+}
+
+std::string Client::getHost() {
+    return _hostname;
 }
