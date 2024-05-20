@@ -4,12 +4,16 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <map>
 #include <sstream>
 #include "Server.h"
 #include "responses.h"
 #include "Util.h"
 
 class Server;
+
+//typedef void (Client::*MemberFunctionPtr)();
+
 
 class Client {
 private:
@@ -30,9 +34,12 @@ private:
     void setHost(const std::string &host);
     void reg(Server &server);
 
-
-
 public:
+    typedef void (Client::*MemberFunctionPtr)(std::string &command, std::vector<std::string> &args, Server &server);
+    static std::map<std::string, MemberFunctionPtr> createHandlerMap();
+    static std::map<std::string, MemberFunctionPtr> functionMap;
+    bool handleCommand(std::string &command, std::vector<std::string> &args, Server &server);
+
     Client();
 
     void reply(std::string rep) const;
@@ -45,7 +52,9 @@ public:
     void setFd(int fd);
     void setIpAddr(const std::string &addr);
     void processBuffer(const char *newBuff, Server &server);
-};
 
+    void handleCommandNick(std::string &command, std::vector<std::string> &args, Server &server);
+
+};
 
 #endif //FT_IRC_CLIENT_H
