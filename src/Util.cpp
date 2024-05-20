@@ -27,3 +27,9 @@ std::string Util::removeFirstChar(const std::string &str) {
     const char *newStr = str.c_str() + 1;
     return std::string(newStr);
 }
+
+std::string Util::streamItoa(int n) {
+    std::stringstream ss;
+    ss << n;
+    return ss.str();
+}

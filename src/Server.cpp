@@ -67,6 +67,7 @@ void Server::registerSignals() {
 
 /* yeet client both from poll and internal client vector */
 void Server::removeClient(int fd) {
+    std::cout << "Removing client " << fd << std::endl;
     for (size_t i = 0; i < _fds.size(); i++){
         if (_fds[i].fd == fd) {
             _fds.erase(_fds.begin() + i);
@@ -78,6 +79,9 @@ void Server::removeClient(int fd) {
             _clients.erase(_clients.begin() + i);
             break;
         }
+    }
+    for (size_t i = 0; i < _channels.size(); ++i) {
+        _channels[i].removeFd(fd);
     }
 }
 
@@ -179,8 +183,9 @@ void Server::receiveData(int fd) {
         std::cout << YEL << "Client <" << fd << "> Data:\n" << WHI << "`" << buff << "`" << std::endl;
 
         /* process data */
-
-        getClientByFd(fd).processBuffer(buff, *this);
+        if (fdExists(fd)) {
+            getClientByFd(fd).processBuffer(buff, *this);
+        }
     }
 }
 
@@ -194,7 +199,7 @@ Client &Server::getClientByNick(const std::string& nick) {
             return (_clients[i]);
         }
     }
-    throw std::runtime_error("Client not found");
+    throw std::runtime_error("Client not found (by nick)");
 }
 
 bool Server::nickExists(const std::string &nick) {
@@ -218,8 +223,7 @@ bool Server::channelExists(const std::string &name) {
 Channel &Server::getChannelByName(const std::string &name) {
     for (size_t i = 0; i < _channels.size(); i++){
         if (_channels[i].getName() == name) {
-            return (&_channels[i]); //here its broken, because whatever is returned is a copy that does not get reflected here
-            // TODO: fixme >:(
+            return (_channels[i]);
         }
     }
     throw std::runtime_error("Channel not found");
@@ -240,6 +244,16 @@ void Server::removeChannel(const std::string &name) {
     }
 }
 
+void Server::sendToClient(const std::string &rep, int fd) {
+    std::string rep_ = rep.substr(0, 510);
+    std::cout << "attempting to reply with " << rep_ << " to " << fd <<std::endl;
+    rep_ += "\r\n";
+    ssize_t sentBytes = send(fd, rep_.c_str(), rep_.length(), 0);
+    if (sentBytes < 0) {
+        std::cerr << "Error sending reply to client <" << fd << ">" << std::endl;
+    }
+}
+
 void Server::sendToAll(const std::string &rep) {
     std::string rep_ = rep.substr(0, 510);
     std::cout << "attempting to reply with " << rep_ << " to all" << std::endl;
@@ -249,16 +263,6 @@ void Server::sendToAll(const std::string &rep) {
         if (sentBytes < 0) {
             std::cerr << "Error sending reply to client <" << _clients[i].getFd() << ">" << std::endl;
         }
-    }
-}
-
-void Server::sendToClient(const std::string &rep, int fd) {
-    std::string rep_ = rep.substr(0, 510);
-    std::cout << "attempting to reply with " << rep_ << " to " << fd <<std::endl;
-    rep_ += "\r\n";
-    ssize_t sentBytes = send(fd, rep_.c_str(), rep_.length(), 0);
-    if (sentBytes < 0) {
-        std::cerr << "Error sending reply to client <" << fd << ">" << std::endl;
     }
 }
 
@@ -277,5 +281,22 @@ Client &Server::getClientByFd(int fd) {
             return (_clients[i]);
         }
     }
-    throw std::runtime_error("Client not found");
+    throw std::runtime_error("Client not found (by fd)");
+}
+
+void Server::op(int fd) {
+    _globalOpFds.push_back(fd);
+}
+
+bool Server::fdIsGlobalOp(int fd) {
+    for (size_t i = 0; i < _globalOpFds.size(); ++i) {
+        if (_globalOpFds[i] == fd) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<Channel> &Server::getChannels() {
+    return _channels;
 }

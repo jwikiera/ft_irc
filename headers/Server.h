@@ -35,6 +35,7 @@ private:
     std::vector<Client> _clients;
     std::vector<Channel> _channels;
     std::vector<struct pollfd> _fds;
+    std::vector<int> _globalOpFds;
 
     /* Stop server when we get a ctrl+c or ctrl+\ */
     static bool _gotSig;
@@ -63,6 +64,7 @@ public:
 
     bool channelExists(const std::string &name);
     Channel &getChannelByName(const std::string &name);
+    std::vector<Channel> &getChannels();
 
     Channel &createChannel(const std::string &name);
     void removeChannel(const std::string &name);
@@ -73,8 +75,11 @@ public:
     void setTopic(const std::string &channel);
     void getTopic(const std::string &channel);
 
-    void sendToAll(const std::string &rep);
     void sendToClient(const std::string &rep, int fd);
+    void sendToAll(const std::string &rep);
+
+    void op(int fd);
+    bool fdIsGlobalOp(int fd);
 
     std::string hostname;
 };

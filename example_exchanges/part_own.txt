@@ -1,0 +1,50 @@
+> 2024/05/19 16:56:57.000438927  length=20 from=0 to=19
+CAP LS 302\r
+JOIN :\r
+< 2024/05/19 16:56:57.000439055  length=24 from=0 to=23
+CAP * LS :multi-prefix\r
+< 2024/05/19 16:56:57.000439086  length=33 from=24 to=56
+461 JOIN :Not enough parameters\r
+> 2024/05/19 16:56:57.000439162  length=23 from=20 to=42
+CAP REQ :multi-prefix\r
+< 2024/05/19 16:56:57.000439212  length=25 from=57 to=81
+CAP * ACK :multi-prefix\r
+> 2024/05/19 16:56:57.000439245  length=9 from=43 to=51
+CAP END\r
+> 2024/05/19 16:56:57.000480140  length=62 from=52 to=113
+PASS 1234\r
+NICK nick1\r
+USER user1 user1 localhost :realname1\r
+< 2024/05/19 16:56:57.000480258  length=30 from=82 to=111
+451 :You have not registered\r
+< 2024/05/19 16:56:57.000523469  length=57 from=112 to=168
+001 nick1 :Welcome to ft_irc\r
+422 :MOTD file is missing\r
+> 2024/05/19 16:56:59.000941760  length=15 from=114 to=128
+MODE nick1 +i\r
+< 2024/05/19 16:56:59.000941917  length=30 from=169 to=198
+501 nick1 :Unknown mode "+i"\r
+> 2024/05/19 16:57:02.000444709  length=9 from=129 to=137
+JOIN #a\r
+< 2024/05/19 16:57:02.000444805  length=16 from=199 to=214
+332 nick1 #a :\r
+< 2024/05/19 16:57:02.000444825  length=59 from=215 to=273
+353 nick1 = #a :@nick1\r
+366 nick1 #a :End of /NAMES list.\r
+> 2024/05/19 16:57:04.000948993  length=9 from=138 to=146
+MODE #a\r
+< 2024/05/19 16:57:04.000949140  length=16 from=274 to=289
+324 nick1 #a +\r
+> 2024/05/19 16:57:07.000452131  length=8 from=147 to=154
+WHO #a\r
+< 2024/05/19 16:57:07.000452280  length=90 from=290 to=379
+352 nick1 #a ~user1 localhost ft_irc nick1 H :0 realname1\r
+315 nick1 #a :End of WHO list\r
+> 2024/05/19 16:57:09.000954632  length=11 from=155 to=165
+MODE #a b\r
+< 2024/05/19 16:57:09.000954720  length=39 from=380 to=418
+368 nick1 #a :End of channel ban list\r
+> 2024/05/19 16:57:12.000457519  length=9 from=166 to=174
+PART #a\r
+< 2024/05/19 16:57:12.000457626  length=35 from=419 to=453
+:nick1!~user1@localhost PART #a :\r

@@ -1,0 +1,65 @@
+> 2024/05/19 16:43:24.000230988  length=20 from=0 to=19
+CAP LS 302\r
+JOIN :\r
+< 2024/05/19 16:43:24.000231253  length=92 from=0 to=91
+:irc.example.net CAP * LS :multi-prefix\r
+:irc.example.net 451 * :Connection not registered\r
+> 2024/05/19 16:43:24.000231402  length=23 from=20 to=42
+CAP REQ :multi-prefix\r
+< 2024/05/19 16:43:26.000232730  length=42 from=92 to=133
+:irc.example.net CAP * ACK :multi-prefix\r
+> 2024/05/19 16:43:26.000232799  length=9 from=43 to=51
+CAP END\r
+> 2024/05/19 16:43:26.000232818  length=62 from=52 to=113
+PASS 1234\r
+NICK nick1\r
+USER user1 user1 localhost :realname1\r
+< 2024/05/19 16:43:26.000232894  length=1205 from=134 to=1338
+:irc.example.net 001 nick1 :Welcome to the Internet Relay Network nick1!~user1@localhost\r
+:irc.example.net 002 nick1 :Your host is irc.example.net, running version ngircd-26.1 (x86_64/pc/linux-gnu)\r
+:irc.example.net 003 nick1 :This server has been started Sun May 19 2024 at 16:43:20 (CEST)\r
+:irc.example.net 004 nick1 irc.example.net ngircd-26.1 abBcCFiIoqrRswx abehiIklmMnoOPqQrRstvVz\r
+:irc.example.net 005 nick1 RFC2812 IRCD=ngIRCd CHARSET=UTF-8 CASEMAPPING=ascii PREFIX=(qaohv)~&@%+ CHANTYPES=#&+ CHANMODES=beI,k,l,imMnOPQRstVz CHANLIMIT=#&+:10 :are supported on this server\r
+:irc.example.net 005 nick1 CHANNELLEN=50 NICKLEN=9 TOPICLEN=490 AWAYLEN=127 KICKLEN=400 MODES=5 MAXLIST=beI:50 EXCEPTS=e INVEX=I PENALTY FNC :are supported on this server\r
+:irc.example.net 251 nick1 :There are 1 users and 0 services on 1 servers\r
+:irc.example.net 254 nick1 1 :channels formed\r
+:irc.example.net 255 nick1 :I have 1 users, 0 services and 0 servers\r
+:irc.example.net 265 nick1 1 1 :Current local users: 1, Max: 1\r
+:irc.example.net 266 nick1 1 1 :Current global users: 1, Max: 1\r
+:irc.example.net 250 nick1 :Highest connection count: 1 (1 connections received)\r
+:irc.example.net 422 nick1 :MOTD file is missing\r
+> 2024/05/19 16:43:28.000735858  length=15 from=114 to=128
+MODE nick1 +i\r
+< 2024/05/19 16:43:29.000235625  length=40 from=1339 to=1378
+:nick1!~user1@localhost MODE nick1 :+i\r
+> 2024/05/19 16:43:32.000404436  length=9 from=129 to=137
+JOIN #a\r
+< 2024/05/19 16:43:32.000404507  length=125 from=1379 to=1503
+:nick1!~user1@localhost JOIN :#a\r
+:irc.example.net 353 nick1 = #a :@nick1\r
+:irc.example.net 366 nick1 #a :End of NAMES list\r
+> 2024/05/19 16:43:34.000743274  length=9 from=138 to=146
+MODE #a\r
+< 2024/05/19 16:43:34.000743358  length=75 from=1504 to=1578
+:irc.example.net 324 nick1 #a +\r
+:irc.example.net 329 nick1 #a 1716129812\r
+> 2024/05/19 16:43:37.000245843  length=8 from=147 to=154
+WHO #a\r
+< 2024/05/19 16:43:37.000245909  length=134 from=1579 to=1712
+:irc.example.net 352 nick1 #a ~user1 localhost irc.example.net nick1 H@ :0 realname1\r
+:irc.example.net 315 nick1 #a :End of WHO list\r
+> 2024/05/19 16:43:39.000749022  length=11 from=155 to=165
+MODE #a b\r
+< 2024/05/19 16:43:39.000749103  length=56 from=1713 to=1768
+:irc.example.net 368 nick1 #a :End of channel ban list\r
+> 2024/05/19 16:43:43.000276364  length=9 from=166 to=174
+PART #a\r
+< 2024/05/19 16:43:43.000276422  length=35 from=1769 to=1803
+:nick1!~user1@localhost PART #a :\r
+> 2024/05/19 16:43:47.000247322  length=22 from=175 to=196
+PING irc.example.net\r
+< 2024/05/19 16:43:47.000247412  length=56 from=1804 to=1859
+:irc.example.net PONG irc.example.net :irc.example.net\r
+< 2024/05/19 16:43:47.000988290  length=111 from=1860 to=1970
+:irc.example.net NOTICE nick1 :Connection statistics: client 0.2 kb, server 1.8 kb.\r
+ERROR :Server going down\r

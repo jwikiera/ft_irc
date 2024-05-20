@@ -25,7 +25,7 @@ MODE #lol b\r
 :irc.example.net 368 nick2 #lol :End of channel ban list\r
 
 # TODO:
-* mode, who, mode b
+* mode, ~~who, mode b~~
 * privmsg
 * DM
 * kick, invite, topic
