@@ -81,6 +81,9 @@ public:
     void op(int fd);
     bool fdIsGlobalOp(int fd);
 
+    void debugPrintFds();
+    void debugPrintChannels();
+
     std::string hostname;
 };
 

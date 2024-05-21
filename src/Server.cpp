@@ -301,3 +301,23 @@ bool Server::fdIsGlobalOp(int fd) {
 std::vector<Channel> &Server::getChannels() {
     return _channels;
 }
+
+void Server::debugPrintFds() {
+    std::string res = "Fds:";
+    for (size_t i = 0; i < _fds.size(); ++i) {
+        res += "`";
+        res += Util::streamItoa(_fds[i].fd);
+        res += "`, ";
+    }
+    std::cout << res << std::endl;
+}
+
+void Server::debugPrintChannels() {
+    std::string res = "Channels:";
+    for (size_t i = 0; i < _channels.size(); ++i) {
+        res += "`";
+        res += _channels[i].getName();
+        res += "`, ";
+    }
+    std::cout << res << std::endl;
+}

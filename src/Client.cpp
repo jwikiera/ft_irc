@@ -143,7 +143,11 @@ static std::string channelNameFromArg(std::string arg) {
     if (arg.empty()) {
         return "";
     }
-    return arg.substr(1);
+    if (startswith(arg, "#")) {
+        return arg.substr(1);
+    } else {
+        return arg;
+    }
 }
 
 void Client::handleCommandNick(std::string &command, std::vector<std::string> &args, Server &server)  {
@@ -475,6 +479,7 @@ void Client::handleCommandInvite(std::string &command, std::vector<std::string> 
     (void) args;
     (void) server;
     if (args.size() > 2) {
+        std::cout << "INVITE: checking if channel `" << channelNameFromArg(args[2]) << "` exists: " << server.channelExists(channelNameFromArg(args[2])) << std::endl;
         if (!server.channelExists(channelNameFromArg(args[2]))) {
             reply(ERR_NOSUCHCHANNEL(args[2]));
             return;
@@ -569,14 +574,24 @@ void Client::processBuffer(const char *newBuff, Server &server) {
             continue;
         }
         printArgs(args);
-        if (!handleCommand(*it, args, server)) {
-            reply(ERR_UNKNOWNCOMMAND(args[0]));
+
+        if (args[0] == "DEBUG:FDS") {
+            server.debugPrintFds();
+            continue;
+        }
+        if (args[0] == "DEBUG:CHANNELS") {
+            server.debugPrintChannels();
+            continue;
         }
 
-        if (!_authenticated) {
+        if (!_authenticated && args[0] != "PASS" && args[0] != "USER" && args[0] != "NICK") {
             std::cout << "Not registered, skipping command" << std::endl;
             reply(ERR_NOTREGISTERED);
             continue;
+        }
+
+        if (!handleCommand(*it, args, server)) {
+            reply(ERR_UNKNOWNCOMMAND(args[0]));
         }
     }
 
