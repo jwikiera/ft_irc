@@ -12,7 +12,7 @@
 
 class Server;
 
-//typedef void (Client::*MemberFunctionPtr)();
+//typedef void (*MemberFunctionPtr)();
 
 
 class Client {
@@ -52,9 +52,24 @@ public:
     void setFd(int fd);
     void setIpAddr(const std::string &addr);
     void processBuffer(const char *newBuff, Server &server);
-
+    
+    // commands
     void handleCommandNick(std::string &command, std::vector<std::string> &args, Server &server);
-
+    void handleCommandPing(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandPass(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandCap(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandUser(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandJoin(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandMode(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandOper(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandWho(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandPrivmsg(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandTopic(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandKick(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandPart(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandQuit(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandMsg(std::string &command, std::vector<std::string> &args, Server &server);
+    void handleCommandInvite(std::string &command, std::vector<std::string> &args, Server &server);
 };
 
 #endif //FT_IRC_CLIENT_H

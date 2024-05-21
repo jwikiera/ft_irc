@@ -12,6 +12,21 @@ Client::Client() {
 std::map<std::string, Client::MemberFunctionPtr> Client::createHandlerMap() {
     std::map<std::string, MemberFunctionPtr> map;
     map["NICK"] = &Client::handleCommandNick;
+    map["PING"] = &Client::handleCommandPing;
+    map["PASS"] = &Client::handleCommandPass;
+    map["CAP"] = &Client::handleCommandCap;
+    map["USER"] = &Client::handleCommandUser;
+    map["JOIN"] = &Client::handleCommandJoin;
+    map["MODE"] = &Client::handleCommandMode;
+    map["OPER"] = &Client::handleCommandOper;
+    map["WHO"] = &Client::handleCommandWho;
+    map["PRIVMSG"] = &Client::handleCommandPrivmsg;
+    map["TOPIC"] = &Client::handleCommandTopic;
+    map["KICK"] = &Client::handleCommandKick;
+    map["PART"] = &Client::handleCommandPart;
+    map["QUIT"] = &Client::handleCommandQuit;
+    map["MSG"] = &Client::handleCommandMsg;
+    map["INVITE"] = &Client::handleCommandInvite;
     return map;
 }
 
@@ -148,13 +163,6 @@ void Client::handleCommandNick(std::string &command, std::vector<std::string> &a
     } else {
         reply(ERR_NEEDMOREPARAMS(std::string("NICK")));
     }
-}
-
-void Client::handleCommandPing(std::string &command, std::vector<std::string> &args, Server &server)  {
-    (void) command;
-    (void) args;
-    (void) server;
-    reply(RPL_PING);
 }
 
 void Client::handleCommandPass(std::string &command, std::vector<std::string> &args, Server &server)  {
@@ -381,7 +389,7 @@ void Client::handleCommandPrivmsg(std::string &command, std::vector<std::string>
                 reply(ERR_NOSUCHNICK(_nick, args[1]));
                 return;
             }
-            std::string message = extractMessage(*it);
+            std::string message = extractMessage(command);
             Client &c = server.getClientByNick(args[1]);
             c.reply(PRIV_MSG_DM(_nick, _user, _hostname, c.getNick(), message));
         } else {
@@ -462,7 +470,7 @@ void Client::handleCommandKick(std::string &command, std::vector<std::string> &a
     }
 }
 
-void Client::handleCommandPing(std::string &command, std::vector<std::string> &args, Server &server)  {
+void Client::handleCommandInvite(std::string &command, std::vector<std::string> &args, Server &server)  {
     (void) command;
     (void) args;
     (void) server;

@@ -83,6 +83,7 @@ void Server::removeClient(int fd) {
     for (size_t i = 0; i < _channels.size(); ++i) {
         _channels[i].removeFd(fd);
     }
+    close(fd);
 }
 
 void Server::closeFds() {
@@ -177,7 +178,7 @@ void Server::receiveData(int fd) {
     if (bytes <= 0) {
         std::cout << RED << "Client <" << fd << "> Disconnected" << WHI << std::endl;
         removeClient(fd);
-        close(fd);
+        //close(fd);
     } else {
         buff[bytes] = '\0';
         std::cout << YEL << "Client <" << fd << "> Data:\n" << WHI << "`" << buff << "`" << std::endl;
