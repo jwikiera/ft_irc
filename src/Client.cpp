@@ -604,6 +604,7 @@ void Client::reg(Server &server) {
     }
     if (!server.checkPassword(_pwd)) {
         reply(ERR_PASSWDMISMATCH);
+        return;
     }
     _authenticated = true;
     reply(RPL_WELCOME(_nick));
