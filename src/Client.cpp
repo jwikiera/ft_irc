@@ -484,7 +484,7 @@ void Client::handleCommandInvite(std::string &command, std::vector<std::string> 
             reply(ERR_NOSUCHCHANNEL(args[2]));
             return;
         }
-        Channel &chan = server.getChannelByName(args[2].substr(1));
+        Channel &chan = server.getChannelByName(channelNameFromArg(args[2]));
         if (!chan.hasFd(_fd)) {
             reply(ERR_USERNOTINCHANNEL(_nick, chan.getName()));
             return;
